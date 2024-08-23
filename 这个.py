@@ -10,10 +10,8 @@ from tkinter import Tk, Frame, Menu, Button, Text, IntVar, Toplevel, Canvas, Pho
 
 
 SCREENSHOT_SAVED_PATHS = [
-    r"C:\Users\zlzk\Documents\GitHub\prompt\笔记生成器\screenshots",
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'screenshots'),
-    # f"{os.path.dirname(os.path.abspath(__file__))}{ '\\' if 'windows' in platform.platform().lower() else '/'}screenshots",
-    r"C:\Users\zlzk\Documents\GitHub\notebook\docs\assets\我的截图"
+    r"D:\zhongpengqun-github\Images\public",
+    r"D:\zhongpengqun-github\Images\private"
 ]
 
 
@@ -81,12 +79,7 @@ class MyCapture:
         pic = image.crop((left, top, right, bottom))
         screenshot_folder = ""
         pic.save(os.path.join(f'{screenshot_folder}', f'{str(int(time.time()))}.png'))
-        #弹出保存截图对话框
-        # fileName = tkinter.filedialog.asksaveasfilename(title='保存截图', filetypes=[("PNG file", "*.png"),("JPEG file", "*.jpeg;*.jpg"),("GIF file","*.gif"),("BMP file","*.bmp")],initialfile=txt1,defaultextension='.png')
-        # if fileName:
-        # 	pic.save(fileName)
-        # 	pic.close()
-        #关闭当前窗口
+
         self.top.destroy()
 
 
@@ -112,7 +105,7 @@ class ImageNoter(Frame):
         button_switch_screenshot_saved_path.pack(side=LEFT, padx=2, pady=2)
 
         self.init_screenshot_saved_path_hint()
-        self.init_canvas()
+        # self.init_canvas()
 
         toolbar.pack(side=TOP, fill=X)
         self.pack()
@@ -150,7 +143,7 @@ class ImageNoter(Frame):
         return latest_image
 
     def init_canvas(self):
-        print(self.get_latest_screenshotimage_path())
+        print(f'---------{self.get_latest_screenshotimage_path()}')
         original_image = Image.open(self.get_latest_screenshotimage_path())
         # 将PIL图像转换为Tkinter PhotoImage对象
         tk_image = ImageTk.PhotoImage(original_image)
@@ -170,7 +163,7 @@ class ImageNoter(Frame):
             time.sleep(0.5)
 
         elif self.button_window_minimize.cget('text') == '窗口还原':
-            root.geometry(f'{int(root.winfo_screenwidth()/2)}x{root.winfo_screenheight() - 80}+{root.winfo_screenwidth() - int(root.winfo_screenwidth()/2)}+0')
+            root.geometry(f'{int(root.winfo_screenwidth()/2)}x{int(root.winfo_screenheight() * 0.05)}+{root.winfo_screenwidth() - int(root.winfo_screenwidth()/2)}+0')
             self.button_window_minimize.config(text="窗口最小化")
 
     # 开始截图
@@ -190,6 +183,6 @@ class ImageNoter(Frame):
 if __name__ == '__main__':
     root = Tk()
     # Top-right
-    root.geometry(f'{int(root.winfo_screenwidth()/2)}x{root.winfo_screenheight() - 80}+{root.winfo_screenwidth() - int(root.winfo_screenwidth()/2)}+0')
+    root.geometry(f'{int(root.winfo_screenwidth()/2)}x{int(root.winfo_screenheight() * 0.05)}+{root.winfo_screenwidth() - int(root.winfo_screenwidth()/2)}+0')
     ImageNoter()
     root.mainloop()
