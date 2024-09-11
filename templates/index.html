@@ -1,0 +1,12 @@
+{% for img_name, comments in result.items() %}
+<img src="{{ img_name }}">
+<br>
+{% for c in comments %}
+{{ c['num'] }}
+<br>
+{{ c['comment'] }}
+<br>
+<br>
+{% endfor %}
+<hr>
+{% endfor %}
