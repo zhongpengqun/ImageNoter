@@ -24,7 +24,9 @@ def index():
     rows = cursor.fetchall()
 
     result = {}
-    img_names = []
+    # img_paths = []
+    print('------------rows---------')
+    print(rows)
     for row in rows:
         _, _, img_path, num, x, y, comment = row
         img_format = img_path.split('.')[-1]
@@ -35,9 +37,12 @@ def index():
         # 在指定坐标上添加文字
         draw.text((x, y), str(num), fill=(255, 0, 0))
         # 保存修改后的图片
-        img_name = f"static/{str(int(time.time()*10000))}.{img_format}"
-        img_names.append(img_name)
-        image.save(img_name)
+        img_name = str(int(time.time()*10000)) + '.' + img_format
+        img_path = f"{os.path.join(os.getcwd(), 'static', img_name)}"
+        print('---------img_path')
+        print(img_path)
+        # img_paths.append(img_path)
+        image.save(img_path)
 
         result.setdefault(img_name, [])
         result[img_name].append({'num': num, 'comment': comment})
