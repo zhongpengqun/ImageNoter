@@ -1,12 +1,29 @@
-{% for img_name, comments in result.items() %}
-<img src="static/{{ img_name }}">
-<br>
-{% for c in comments %}
-{{ c['num'] }}
-<br>
-{{ c['comment'] }}
-<br>
-<br>
-{% endfor %}
-<hr>
-{% endfor %}
+<html>
+    <head>
+        <title>
+            {% if result %}
+                ......
+            {% endif %}
+        </title>
+    </head>
+    <body>
+        {% for img_name, comments in result.items() %}
+        <img src="static/{{ img_name }}">
+        <br>
+        {% for c in comments %}
+        {{ c['num'] }}
+        <br>
+        {{ c['comment'] }}
+        <br>
+        <br>
+        {% endfor %}
+        <hr>
+        {% endfor %}
+    </body>
+    <script>
+        // 设置定时器，每1000毫秒（即每秒）执行一次
+        setInterval(function() {
+            location.reload();
+        }, 1500);
+    </script>
+</html>

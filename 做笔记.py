@@ -3,6 +3,7 @@ import glob
 import sqlite3
 import tkinter as tk
 from PIL import Image, ImageTk, ImageDraw
+from utils.clipboard import read_from_clipboard, write_to_clipboard
 
 from init_db import DB, TABLE
 
@@ -46,7 +47,11 @@ def load_new_image():
 
     canvas.delete("all")  # 清空Canvas以显示更新后的图像
 
-    new_image = Image.open(get_latest_screenshotimage_path())
+    try:
+        new_image = Image.open(read_from_clipboard())
+        write_to_clipboard('')
+    except:
+        new_image = Image.open(get_latest_screenshotimage_path())
 
     original_image = new_image
 
