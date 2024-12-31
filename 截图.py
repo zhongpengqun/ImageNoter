@@ -183,11 +183,12 @@ class ImageNoter(Frame):
         #显示全屏幕截图
         w = MyCapture(filename)
         self.button_do_screenshot.wait_window(w.top)
-        #截图结束，恢复主窗口，并删除临时的全屏幕截图文件
+        #截图结束，恢复主窗口，并删除临时的全屏幕截图文件d
         os.remove(filename)
 
     def do_shot_whole_screen(self):
-        filename = os.path.join(self.screenshot_saved_path, f'{int(time.time()*1000)}.png')
+
+        filename = str(int(time.time()*1000)) + '.png'
         #grab()方法默认对全屏幕进行截图
         im = ImageGrab.grab()
         im.save(filename)
