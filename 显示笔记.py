@@ -20,6 +20,9 @@ def index():
     cursor = connection.cursor()
 
     clipboard_text = read_from_clipboard()
+
+    if not clipboard_text:
+        return ''
     print(f'----------clipboard_text:{clipboard_text}')
     cursor.execute(f"select * from {TABLE} where lower(comment) like '%{clipboard_text.lower()}%';")
     rows = cursor.fetchall()
