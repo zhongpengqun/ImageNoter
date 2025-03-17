@@ -9,9 +9,13 @@ from init_db import DB, TABLE
 
 from settings import screenshot_folder_choices
 
+
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 800
+TOP_FRAME_HEIGHT = 700
+BOTTOM_FRAME_HEIGHT = 100
+
 def get_latest_screenshotimage_path():
-    # project_root = os.path.abspath(os.path.join(os.getcwd(), "../.."))
-    # jietu_folder = os.path.abspath(os.path.join(project_root, "docs/assets/我的截图"))
     list_of_files = []
 
     for screenshot_folder in screenshot_folder_choices:
@@ -20,32 +24,11 @@ def get_latest_screenshotimage_path():
     return latest_image
 
 
-original_image = Image.open(get_latest_screenshotimage_path())
-
-point_counter = 0
-
-# 创建Tkinter窗口
-root = tk.Tk()
-root.title('点击图像获取坐标并显示红点编号')
-
-# 将PIL图像转换为Tkinter PhotoImage对象
-tk_image = ImageTk.PhotoImage(original_image)
-
-# 创建Canvas并显示图像
-canvas = tk.Canvas(root, width=tk_image.width(), height=tk_image.height())
-canvas.create_image(0, 0, anchor=tk.NW, image=tk_image)
-canvas.pack()
-
-entry_pixel_position = tk.Entry(root, width=30)
-entry_comment = tk.Entry(root, width=30)
-entry_pixel_position.pack()
-entry_comment.pack()
-
-
 def load_new_image():
     global original_image
 
-    canvas.delete("all")  # 清空Canvas以显示更新后的图像
+    # 清空Canvas以显示更新后的图像
+    canvas.delete("all")
 
     try:
         new_image = Image.open(read_from_clipboard())
@@ -62,13 +45,13 @@ def load_new_image():
 
 
 def onclick_submit_button():
-    _comment = entry_comment.get()
-    _entry_pixel_position = entry_pixel_position.get()
+    _comment = text_comment.get("1.0", tk.END)
+    _label_pixel_position = label_pixel_position_string.get()
 
-    if (not _comment) or (not _entry_pixel_position):
+    if (not _comment) or (not _label_pixel_position):
         return
 
-    _x, _y = _entry_pixel_position.split(',')[0], _entry_pixel_position.split(',')[1]
+    _x, _y = _label_pixel_position.split(',')[0], _label_pixel_position.split(',')[1]
 
     # 记录该点的笔记
     connection = sqlite3.connect(DB)
@@ -81,9 +64,9 @@ def onclick_submit_button():
     cursor.close()
     connection.close()
 
-    # Clear entries
-    entry_pixel_position.delete(0, tk.END)
-    entry_comment.delete(0, tk.END)
+    # Clear
+    label_pixel_position_string.set('')
+    text_comment.delete('1.0', tk.END)
 
 
 def on_canvas_click(event):
@@ -103,13 +86,47 @@ def on_canvas_click(event):
     canvas.create_image(0, 0, anchor=tk.NW, image=tk_image)
     canvas.image = tk_image  # 保留对图像的引用
 
-    entry_pixel_position.delete(0, tk.END)
-    entry_pixel_position.insert(0, '%s,%s'%(x, y))
+    label_pixel_position_string.set('')
+    label_pixel_position_string.set('%s,%s'%(x, y))
 
+# 
+original_image = Image.open(get_latest_screenshotimage_path())
+point_counter = 0
 
-tk.Button(root, text="Submit", command=onclick_submit_button).pack()
-tk.Button(root, text="Load New Image", command=load_new_image).pack()
+# 创建Tkinter窗口
+root = tk.Tk()
+# root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}+10+10')
+root.geometry(f'+10+10')
+root.title('Image Noter')
 
+# 将PIL图像转换为Tkinter PhotoImage对象
+tk_image = ImageTk.PhotoImage(original_image)
+
+# 创建Canvas并显示图像
+canvas = tk.Canvas(root, width=tk_image.width(), height=tk_image.height())
+canvas.create_image(0, 0, anchor=tk.NW, image=tk_image)
+canvas.grid(row=0, column=0)
+
+right_frame = tk.Frame(root
+                  , width=200
+                  , height=WINDOW_HEIGHT
+                  , highlightbackground="black"
+                  , highlightthickness=0
+                  , bd=0)
+right_frame.grid(row=0, column=1)
+
+# entry_pixel_position = tk.Entry(root, width=30)
+label_pixel_position_string = tk.StringVar()
+label_pixel_position = tk.Label(right_frame, textvariable=label_pixel_position_string)
+label_pixel_position.grid(row=0, column=0, columnspan=2, sticky=tk.NW)
+
+# entry_comment = tk.Entry(root, width=30)
+# entry_comment.grid(row=2, column=1)
+text_comment = tk.Text(right_frame, width=30)
+text_comment.grid(row=1, column=0, columnspan=2, sticky=tk.NW)
+
+tk.Button(right_frame, text="Submit", command=onclick_submit_button, width=13).grid(row=2, column=0, sticky=tk.NW)
+tk.Button(right_frame, text="Load New Image", command=load_new_image, width=15).grid(row=2, column=1, sticky=tk.NW)
 
 # 绑定点击事件处理函数
 canvas.bind("<Button-1>", on_canvas_click)
